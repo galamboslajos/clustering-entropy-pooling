@@ -11,3 +11,5 @@ The intended contribution here is the clustering application and its evaluation,
 ## Status
 
 Initial setup. Implementation, experiments, and a short research report will follow.
+
+---checking git vscode
