@@ -14,10 +14,10 @@ Dataset preparation started. Clustering experiments and a short research report 
 
 ## Daily dataset
 
-Open [`01_daily_macro_dataset.ipynb`](01_daily_macro_dataset.ipynb) in VS Code and select a Python kernel. Install dependencies with `python -m pip install -r requirements.txt`, then run all cells. The notebook constructs a 15-year dataset of S&P 500 closes, 10-year breakeven inflation, 10-year real Treasury yields, the 10y–2y Treasury slope, VIX, VIX3M, and VIX minus VIX3M. Change `AS_OF` to update the window.
+Open [`01_daily_macro_dataset.ipynb`](01_daily_macro_dataset.ipynb) in VS Code and select a Python kernel. Install dependencies with `python -m pip install -r requirements.txt`, then run all cells. The notebook constructs a 15-year dataset of S&P 500 closes, 10-year breakeven inflation, 10-year real Treasury yields, the 10y–2y Treasury slope, the Baa–10y Treasury credit spread (FRED BAA10Y), VIX, VIX3M, and VIX minus VIX3M. Change `AS_OF` to update the window.
 
 Sources are Yahoo Finance, FRED, and Cboe. Downloads, CSV datasets, and retrieval metadata are saved locally under `data/` (ignored by Git). The notebook reports missing observations and discusses adding monthly earnings using release dates and historical vintages.
 
-Continue in [`02_clustering_analysis.ipynb`](02_clustering_analysis.ipynb), which loads the saved daily levels, previews the first rows, and shows a compact mosaic of all seven series. Clustering analysis will be added there.
+Continue in [`02_clustering_analysis.ipynb`](02_clustering_analysis.ipynb), which loads the saved daily levels, previews the first rows, and shows a compact mosaic of all eight series, then transforms equity returns, scales features, applies PCA, and evaluates clustering.
 
 ---checking git vscode
