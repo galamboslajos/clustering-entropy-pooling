@@ -10,14 +10,14 @@ The intended contribution here is the clustering application and its evaluation,
 
 ## Status
 
-Dataset preparation started. Clustering experiments and a short research report will follow.
+Daily dataset preparation, clustering experiments, and cluster-conditioned Entropy Pooling resampling are implemented. A short research report will follow.
 
 ## Daily dataset
 
-Open [`01_daily_macro_dataset.ipynb`](01_daily_macro_dataset.ipynb) in VS Code and select a Python kernel. Install dependencies with `python -m pip install -r requirements.txt`, then run all cells. The notebook constructs a 15-year dataset of S&P 500 closes, 10-year breakeven inflation, 10-year real Treasury yields, the 10y–2y Treasury slope, the Baa–10y Treasury credit spread (FRED BAA10Y), VIX, VIX3M, and VIX minus VIX3M. Change `AS_OF` to update the window.
+Open [`01_daily_macro_dataset.ipynb`](01_daily_macro_dataset.ipynb) in VS Code and select a Python kernel. Install dependencies with `python -m pip install -r requirements.txt`, then run all cells. The notebook constructs a 15-year dataset of S&P 500 closes, 10-year breakeven inflation, 10-year real Treasury yields, the 10y–2y Treasury slope, the Baa–10y Treasury credit spread (FRED BAA10Y), VIX, VIX3M, VIX minus VIX3M, and the S&P 500/gold ratio (calculated from `GC=F` gold futures closes; gold is retained only as a raw source). Change `AS_OF` to update the window.
 
 Sources are Yahoo Finance, FRED, and Cboe. Downloads, CSV datasets, and retrieval metadata are saved locally under `data/` (ignored by Git). The notebook reports missing observations and discusses adding monthly earnings using release dates and historical vintages.
 
-Continue in [`02_clustering_analysis.ipynb`](02_clustering_analysis.ipynb), which loads the saved daily levels, previews the first rows, and shows a compact mosaic of all eight series, then transforms equity returns, scales features, applies PCA, and evaluates clustering.
+Continue in [`02_clustering_analysis.ipynb`](02_clustering_analysis.ipynb), which loads the saved daily levels, previews the first rows, and shows a compact mosaic of all nine series, then transforms equity returns, scales features, applies PCA, and evaluates clustering. Its final section adapts Fortitudo Section 3.2.1 to three K-means states: exponential-decay prior, cluster mean views and variance caps, state-dependent resampling, and 21-day equity return distributions. Set `VARIANCE_MODE = "equal"` for exact variance matching. EP views include the standardized S&P 500/gold ratio; gold levels are excluded. The experiment is descriptive and calibrated on the full sample, not a predictive backtest. Outputs and the compatible array bundle are saved under `data/ep/`.
 
 ---checking git vscode
