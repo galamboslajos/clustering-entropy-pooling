@@ -1,0 +1,109 @@
+{
+  "clustering": {
+    "features": [
+      "breakeven_10y",
+      "real_yield_10y",
+      "slope_10y_2y",
+      "baa_10y_spread",
+      "vix",
+      "sp500_momentum_63d",
+      "sp500_drawdown_252d",
+      "sp500_realized_vol_21d",
+      "sp500_rsi_14d",
+      "small_large_momentum_21d",
+      "sp500_log_return"
+    ],
+    "log_columns": [
+      "vix",
+      "sp500_realized_vol_21d"
+    ],
+    "rows": 3630,
+    "start": "2011-10-05",
+    "end": "2026-10-02",
+    "k_values": [
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8
+    ],
+    "minimum_cluster_rows": 37,
+    "minimum_coverage_pct": 80,
+    "score_rows": 1000,
+    "score_seed": 123,
+    "score_winner_run": "run_040",
+    "score_winner_model": "Agglomerative",
+    "score_winner_parameters": {
+      "compute_distances": false,
+      "compute_full_tree": "auto",
+      "connectivity": null,
+      "distance_threshold": null,
+      "linkage": "complete",
+      "memory": null,
+      "metric": "euclidean",
+      "n_clusters": 2
+    },
+    "selection": "sample silhouette of eligible standard per-family winners; GMM winner chosen by BIC",
+    "calibrations": "PCA95 and robust: standard winners settings held fixed; no reselection",
+    "validation": "full-sample descriptive clustering; downstream EP outputs saved separately; no formal hypothesis tests"
+  },
+  "ep": {
+    "model": "K-means",
+    "run": "run_005",
+    "parameters": {
+      "algorithm": "lloyd",
+      "copy_x": true,
+      "init": "k-means++",
+      "max_iter": 300,
+      "n_clusters": 2,
+      "n_init": 20,
+      "random_state": 1,
+      "tol": 0.0001,
+      "verbose": 0
+    },
+    "inputs": [
+      "breakeven_10y",
+      "real_yield_10y",
+      "slope_10y_2y",
+      "baa_10y_spread",
+      "vix",
+      "sp500_momentum_63d",
+      "sp500_drawdown_252d",
+      "sp500_realized_vol_21d",
+      "sp500_rsi_14d",
+      "small_large_momentum_21d",
+      "sp500_log_return"
+    ],
+    "log_columns": [
+      "vix",
+      "sp500_realized_vol_21d"
+    ],
+    "scaling": "StandardScaler",
+    "fit_dimensions": 11,
+    "view_features": [
+      "breakeven_10y",
+      "real_yield_10y",
+      "slope_10y_2y",
+      "baa_10y_spread",
+      "vix",
+      "sp500_momentum_63d",
+      "sp500_drawdown_252d",
+      "sp500_realized_vol_21d",
+      "sp500_rsi_14d",
+      "small_large_momentum_21d"
+    ],
+    "view_units": "standard-scaled selectively transformed features",
+    "score_winner": "Agglomerative",
+    "reason": "application choice based on profile populations and calibration stability",
+    "ep_solved": true,
+    "half_life": 1815.0,
+    "paths_per_initial_state": 10000,
+    "horizon": 21,
+    "simulation_seed": 0,
+    "mean_views": "equalities",
+    "variance_views": "second-moment upper bounds",
+    "return_units": "simple returns at both horizons"
+  }
+}

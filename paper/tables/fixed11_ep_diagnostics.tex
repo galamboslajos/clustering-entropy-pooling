@@ -1,0 +1,14 @@
+\begin{table}[htbp]
+\centering
+\small
+\begin{tabularx}{\textwidth}{@{}Xrrr@{}}
+\toprule
+Cluster profile & Max. equality error & Max. bound violation & Entropy ENS\\
+\midrule
+0 & 4.71e-07 & 1.19e-06 & 1297.7\\
+1 & 2.50e-07 & 9.72e-08 & 2900.2\\
+\bottomrule
+\end{tabularx}
+\caption{EP feasibility and concentration on all 3,630 historical scenarios. Errors are in the transformed, standardized view coordinates. Both solves pass the notebook tolerance of $10^{-5}$. Entropy ENS can exceed the population of the cluster supplying the views because all historical rows remain available.}
+\label{tab:fixed11-ep-diagnostics}
+\end{table}

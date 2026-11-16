@@ -1,0 +1,16 @@
+\begin{table}[htbp]
+\centering
+\footnotesize
+\begin{tabularx}{\textwidth}{@{}Xrrrrrr@{}}
+\toprule
+Model & Cluster & Share (\%) & Mean log (\%) & Vol. (\%) & CVaR90 (\%) & CVaR95 (\%)\\
+\midrule
+K-means & 0 & 25.62 & -0.197 & 1.733 & 3.194 & 4.028\\
+K-means & 1 & 74.38 & 0.135 & 0.670 & 1.057 & 1.332\\
+Hierarchical & 0 & 94.24 & 0.155 & 0.905 & 1.358 & 1.705\\
+Hierarchical & 1 & 5.76 & -1.673 & 1.738 & 5.128 & 6.378\\
+\bottomrule
+\end{tabularx}
+\caption{Observed within-cluster equity profiles, before EP. Means are daily log returns; volatility and CVaR use daily simple returns. Volatility is not annualized and positive CVaR represents loss. Local cluster IDs are not matched across models. These descriptive differences are not formal hypothesis-test results.}
+\label{tab:fixed11-observed-profiles}
+\end{table}

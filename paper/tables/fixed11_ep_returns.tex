@@ -1,0 +1,16 @@
+\begin{table}[htbp]
+\centering
+\small
+\begin{tabularx}{\textwidth}{@{}Xrrrrrr@{}}
+\toprule
+Horizon & Initial cluster & Mean & Std. & Loss prob. & CVaR90 & CVaR95\\
+\midrule
+1 day & 0 & -0.15 & 1.70 & 54.80 & 3.11 & 3.81\\
+1 day & 1 & 0.13 & 0.67 & 42.50 & 1.08 & 1.38\\
+21 days & 0 & 0.18 & 5.88 & 46.33 & 10.81 & 13.20\\
+21 days & 1 & 1.60 & 4.54 & 32.08 & 7.23 & 9.26\\
+\bottomrule
+\end{tabularx}
+\caption{EP/FFR S\&P 500 simple-return summaries from 10,000 paths per initial state, seed 0. All entries are percentages. Standard deviations are at the indicated horizon; positive CVaR represents loss without demeaning. One-day statistics use the first draw of the same paths, while 21-day statistics allow state changes. These are simulated conditional scenarios, not forecast-validation results.}
+\label{tab:fixed11-ep-returns}
+\end{table}

@@ -1,0 +1,3 @@
+Model,Run,Silhouette_sample,Silhouette_full,Min_size,Coverage_pct,Seed_stability_ARI,Smallest group (%),PCA95 ARI,PCA95 min rows,PCA95 eligible,Robust ARI,Robust min rows,Robust eligible
+K-means,run_005,0.2691097330373007,0.2725164313357218,930,100.0,1.0,25.619834710743802,1.0,930,True,0.8362129505000686,791,True
+Agglomerative,run_040,0.3279761518629971,0.33208769096771973,209,100.0,,5.757575757575758,0.05768305746274407,7,False,0.25420229901270797,34,False

@@ -1,0 +1,14 @@
+\begin{table}[htbp]
+\centering
+\footnotesize
+\begin{tabularx}{\textwidth}{@{}Xrrcrrc@{}}
+\toprule
+Model & PCA95 ARI & Min. $N_k$ & Pass & Robust ARI & Min. $N_k$ & Pass\\
+\midrule
+K-means & 1.000 & 930 & Yes & 0.836 & 791 & Yes\\
+Hierarchical & 0.058 & 7 & No & 0.254 & 34 & No\\
+\bottomrule
+\end{tabularx}
+\caption{Representation checks at each standard winner's fixed count and settings. ARI compares assignments with that model's standard fit. The common minimum population is 37. The standard hierarchical fit itself passes; both of its alternative-representation checks fail. These are calibration checks, not separate parameter searches.}
+\label{tab:fixed11-sensitivity}
+\end{table}

@@ -1,0 +1,4 @@
+Model,Mean_ARI,Minimum_ARI,All_eligible
+K-means,1.0,1.0,True
+K-medoids,1.0,1.0,True
+GMM,0.8640144720442002,0.7960217080663002,True

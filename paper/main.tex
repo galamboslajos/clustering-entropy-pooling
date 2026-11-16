@@ -20,7 +20,7 @@
 \maketitle
 
 \begin{abstract}
-This note studies clustering as an alternative to threshold-based partitioning when constructing market-state views for Entropy Pooling (EP). Separate low, middle and high bands for many variables produce a large Cartesian set of potential joint states, whose observed subsets can be small. We instead learn a joint partition and use each cluster's feature means and variances to calibrate EP views within the Fully Flexible Resampling framework described by Vorobets. The planned primary demonstration fixes five macro/market variables and five technical variables plus the S\&P 500 daily log return, compares five clustering families, and uses the selected partition to calibrate EP views on the ten state features. Full 51-input and randomized-subset checks are assigned to the appendix. The original 17-feature experiment is retained as exploratory evidence; its two-cluster result is not imposed on the new primary specification. The application concerns descriptive conditional states, not established economic regimes or demonstrated forecasting improvements. The empirical question is whether cluster-based calibration produces more stable and useful scenario distributions than threshold-based alternatives.
+This note studies clustering as an alternative to threshold-based partitioning when constructing market-state views for Entropy Pooling (EP). Separate low, middle and high bands for many variables produce a large Cartesian set of potential joint states, whose observed subsets can be small. We instead learn a joint partition and use each cluster's feature means and variances to calibrate EP views within the Fully Flexible Resampling framework described by Vorobets. The primary demonstration fixes five macro/market variables and five technical variables plus the S\&P 500 daily log return, compares five clustering families, and uses the selected partition to calibrate EP views on the ten state features. Full 51-input and randomized-subset checks are assigned to the appendix. The fixed-input search selects complete-linkage hierarchical clustering by silhouette, but K-means with two clusters is used for EP because its profiles have larger populations and stronger stability in the tested representation checks. This is an application choice after diagnostic review, not a silhouette victory. The original 17-feature experiment is retained as exploratory evidence. The application concerns descriptive conditional states, not established economic regimes or demonstrated forecasting improvements. The empirical question is whether cluster-based calibration produces more stable and useful scenario distributions than threshold-based alternatives.
 \end{abstract}
 
 \section{Problem and proposed contribution}
@@ -197,7 +197,7 @@ c_t=\underset{k\in\{0,\ldots,\widehat K-1\}}{\arg\min}\,
 \qquad
 \mathcal C_k=\{t:c_t=k\},\qquad N_k=|\mathcal C_k|.
 \end{equation}
-Ties are resolved deterministically. Cluster labels identify groups and carry no numerical ordering of risk. Equations below apply to every $k=0,\ldots,\widehat K-1$, yielding $\widehat K$ profile-specific EP probability vectors. Two clusters appear in the historical exploratory example only; the primary count must be selected again.
+Ties are resolved deterministically. Cluster labels identify groups and carry no numerical ordering of risk. Equations below apply to every $k=0,\ldots,\widehat K-1$, yielding $\widehat K$ profile-specific EP probability vectors. The fixed eleven-input K-means search selects two clusters in the primary example; the general construction does not impose that count on other datasets or specifications.
 
 For each cluster, calculate the conditioning-feature mean and population variance vectors:
 \begin{equation}
@@ -225,7 +225,7 @@ U_{\widehat L}
 \end{aligned}
 \label{eq:complete-pipeline}
 \end{equation}
-Here $S$ and $U_{\widehat L}$ have the scaled observations and retained PCA scores as rows. The PCA dimension is selected first under the variance-retention rule; candidate K-means fits then receive that fixed PCA representation.
+Here $S$ and $U_{\widehat L}$ have the scaled observations and retained PCA scores as rows. The PCA representation is fixed before the count search. It can retain all informative directions, as in the primary demonstration, or use the declared variance-retention rule in a truncation experiment; candidate K-means fits receive the same representation within each search.
 
 \subsection{Entropy Pooling with cluster-derived views}
 
@@ -265,7 +265,7 @@ These views do not fix all covariances or the full joint distribution. Historica
 \begin{equation}
 \operatorname{ENS}(q)=\exp\!\left(-\sum_{t=1}^{T}q_t\log q_t\right),
 \end{equation}
-is a concentration diagnostic, not the objective used in \eqref{eq:ep}. It also differs from the inverse-concentration measure \(1/\sum_t q_t^2\), which the notebook currently reports.
+is a concentration diagnostic, not the objective used in \eqref{eq:ep}. It also differs from the inverse-concentration measure \(1/\sum_t q_t^2\). Notebook 04 reports the entropy-based ENS used here; the historical notebook-02 example reports inverse concentration.
 
 \subsection{Comparison with threshold-based state construction}
 
@@ -318,7 +318,7 @@ They follow from EP weights and sampled-row labels, rather than counts of consec
 
 \subsection{Decision: eleven inputs for the main demonstration}
 
-The main demonstration will use one fixed set of ten state features---five macro/market variables and five technical variables---plus the S\&P 500 daily log return, for eleven clustering inputs in total. This makes the main fit comparable in size and block balance with the randomized $5+5+$return experiment. Eleven is a declared design choice for a compact, interpretable application, not an estimated optimal feature count. The ten features are chosen by their stated economic roles, not by selecting the random draw with the highest silhouette or the largest return contrast. They remain fixed throughout the primary model comparison.
+The main demonstration in \texttt{04\_fixed\_feature\_clustering.ipynb} uses one fixed set of ten state features---five macro/market variables and five technical variables---plus the S\&P 500 daily log return, for eleven clustering inputs in total. This makes the main fit comparable in size and block balance with the randomized $5+5+$return experiment. Eleven is a declared design choice for a compact, interpretable application, not an estimated optimal feature count. The ten features were fixed before this model comparison by their stated economic roles, rather than by selecting the random draw with the highest silhouette or the largest return contrast. The feature pool and historical data had already been explored, so this is a retrospective research design rather than a preregistered experiment. They remain fixed throughout the primary model comparison.
 
 \begin{table}[htbp]
 \centering
@@ -344,15 +344,28 @@ Return anchor & Daily S\&P 500 log return & Mandatory equity input and profiled 
 \label{tab:primary-features}
 \end{table}
 
-Use the expanded experiment's common complete-case calendar for both the eleven-input fit and the full-panel comparison, without filling missing observations. Follow its feature definitions and selective-log policy: apply a natural log to VIX and 21-day realized volatility in this fixed subset, retain the other precomputed descriptors and signed state variables, and do not log the equity log return again. Fit StandardScaler, then retain all informative, unwhitened PCs for the primary search. This preserves the scaled Euclidean geometry rather than claiming that an arbitrary variance cutoff is optimal. PCA95 and robust scaling are sensitivity checks. The illustrative 70\% cutoff in the mathematical section is not the primary specification.
+The eleven-input fit uses the same 3,630 complete-case dates as the expanded study, from 5 October 2011 to 2 October 2026, without filling missing observations. Follow its feature definitions and selective-log policy: apply a natural log to VIX and 21-day realized volatility in this fixed subset, retain the other precomputed descriptors and signed state variables, and do not log the equity log return again. Fit StandardScaler, then retain all informative, unwhitened PCs for the primary search. This preserves the scaled Euclidean geometry rather than claiming that an arbitrary variance cutoff is optimal. PCA95 and robust scaling are sensitivity checks. The illustrative 70\% cutoff in the mathematical section is not the primary specification.
 
-\subsection{Model choice must be rerun on the fixed eleven inputs}
+\subsection{Five-model tuning on the fixed eleven inputs}
 
-Compare K-means, K-medoids, agglomerative clustering, Gaussian mixtures and DBSCAN on the same eleven inputs, dates and declared evaluation geometry. Reuse the documented 85-candidate grid in Appendix~\ref{app:model-inventory}: candidate counts $K=2,\ldots,8$, method-specific linkage/covariance/initialization choices and the DBSCAN neighbourhood grid. Apply the same minimum-population and coverage screen to every family, with GMM convergence required. Select geometric candidates by silhouette and GMM candidates by BIC within a fixed representation. Report all five per-family selections, unavailable searches, population sizes, coverage and the three geometric diagnostics in one main results table. Record whether silhouette uses the fixed sample of dates or the complete sample and keep that choice common across models.
+Fit K-means, K-medoids, agglomerative clustering, Gaussian mixtures and DBSCAN to the same transformed observations. The independent 85-candidate search uses the grid documented in Table~\ref{tab:original-grid}: 7 K-means, 14 K-medoids, 21 hierarchical, 28 GMM and 15 DBSCAN candidates. Counts/components range from 2 to 8. Apply a common screen requiring at least two groups, finite selection silhouette, at least 80\% coverage and at least $\max(20,\lceil0.01T\rceil)=37$ observations per assigned group; GMM must converge. All 7 K-means and 14 K-medoids candidates pass, as do 7 hierarchical, 28 GMM and 1 DBSCAN candidate.
 
-K-means is the leading candidate from the exploratory work, but neither the model family nor $K=2$ is inherited as a demonstrated winner for this new fixed specification. The main demonstration will follow the selected, adequately populated configuration after that comparison; use its labels consistently for the time plot, original-unit profiles and EP views. The EP conditioning vector contains the ten state features and excludes the S\&P 500 return from its imposed mean/variance views. Keeping the return in clustering makes this a contemporaneous state-description experiment rather than independent evidence that state variables forecast returns.
+For geometric selection, use the same fixed 1,000 dates drawn without replacement with seed 123, and evaluate all models in the common standard-scaled, selectively logged eleven-feature space. GMM selection instead minimizes BIC among eligible fits within the fixed standard PCA representation. Full-sample silhouette is calculated subsequently without reselecting. CH and DB use all assigned dates; DBSCAN scores exclude noise and its coverage must be retained when interpreting the result. Standard inputs retain all eleven informative PCs without whitening. The count and winner are not inherited from notebook 02 or a random feature draw.
 
-The eleven-input model search, profiles and EP demonstration under this exact fixed specification are not yet reported here. Existing 17-feature scores, cluster populations and EP outputs are historical exploratory results retained in Appendix~\ref{app:model-inventory}; they are not substituted for the pending primary results. Results from another random eleven-feature draw cannot be relabelled as this fit.
+\input{tables/fixed11_selected_models.tex}
+
+Complete-linkage hierarchical clustering with $K=2$ wins the declared silhouette comparison: 0.328 on the selection sample and 0.332 on all dates, versus 0.269 and 0.273 for K-means with $K=2$. K-medoids also selects two groups. GMM selects eight components at the upper boundary of the tested range; this is a within-range BIC preference, not an identified optimal economic-regime count. The single eligible DBSCAN candidate has four groups and assigns 82.01\% of dates. The model scores are modest, and the search excludes $K=1$; this exercise does not establish sharply separated latent populations.
+
+\subsection{Why K-means is used for the EP demonstration}
+\label{sec:ep-choice}
+
+Retain the hierarchical silhouette winner in the comparison, but choose the \emph{standard-scaled K-means $K=2$ fit} for the EP application after reviewing population and sensitivity diagnostics. Its groups contain 930 and 2,700 observations (25.62\% and 74.38\%), compared with 209 and 3,421 for the hierarchy (5.76\% and 94.24\%). The hierarchical fit itself passes the population screen. All 209 dates in its lower-return group belong to the 930-date K-means lower-return group, so it identifies a more severe subset of that broader stress profile.
+
+\input{tables/fixed11_sensitivity.tex}
+
+At the selected standard settings, PCA95 retains nine PCs and 97.33\% of variance. K-means assignments are unchanged (ARI 1.000), while the robust-scaling check remains eligible with ARI 0.836 and minimum population 791. The hierarchical PCA95 and robust checks have minimum groups of 7 and 34 observations and fail the same population rule; their ARIs with its standard fit are 0.058 and 0.254. These are fixed-settings representation checks, not renewed searches in the alternative geometries. The selected standard K-means configuration also has pairwise ARI 1 across seeds 1, 7 and 21. Hierarchical clustering is deterministic at fixed inputs, so this seed check is not a source of advantage over the hierarchy.
+
+The EP choice therefore favours larger view-estimation populations and stronger observed stability under the tested representation changes, while accepting a lower silhouette. This is an explicitly diagnostic, retrospective application choice, not a change to the recorded silhouette winner or a claim that K-means dominates every metric. Larger groups do not by themselves prove smaller moment-estimation errors, and these checks do not establish superiority of its EP probabilities. The demonstrated configuration is StandardScaler, all eleven informative unwhitened PCs, K-means with two clusters, 20 starts, k-means++ initialization and seed 1. The robust configuration remains a sensitivity check rather than replacing the standard reference.
 
 \subsection{Appendix checks and their role}
 
@@ -374,7 +387,69 @@ Historical appendix & Original 17-feature notebook 02 & Preserve the exploratory
 \label{tab:experiment-roles}
 \end{table}
 
+Tables and figures for notebook 04 are frozen under \texttt{paper/tables/fixed11\_*} and \texttt{paper/images/fixed11\_*}; their configuration snapshot records the selected parameters, transformations, dates and simulation seed. The paper compiles from these tracked artifacts without the ignored local raw-data directory.
+
 The full-panel and randomized checks assess sensitivity of the primary design; they do not turn eleven inputs into an optimal feature count or guarantee identical memberships. Count stability, membership agreement, financial-profile differences and comparative EP usefulness remain distinct questions. Compare partitions in explicitly shared evaluation spaces; native silhouettes from different dimensions cannot be ranked as one contest. Appendix empirical results remain to be consolidated under this design.
+
+\section{Fixed-input profiles and Entropy Pooling results}
+\label{sec:fixed-results}
+
+\subsection{Observed profiles of the two partitions}
+
+Table~\ref{tab:fixed11-observed-profiles} describes observations grouped by each fitted partition before EP. For K-means, local cluster 0 has lower mean daily log returns and greater volatility, drawdown and tail losses; cluster 1 is relatively calm. These IDs are preserved throughout the EP demonstration and need not match the historical notebook-02 IDs. Figure~\ref{fig:fixed11-timeline} shows their daily occurrence.
+
+\input{tables/fixed11_observed_profiles.tex}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\textwidth]{images/fixed11_kmeans_timeline.png}
+\caption{Fixed eleven-input, standard-scaled K-means assignments on the 3,630 common dates. Cluster 0 contains 930 lower-return/higher-risk observations; cluster 1 contains 2,700 relatively calm observations. These are full-sample descriptive assignments, with no filling of absent dates.}
+\label{fig:fixed11-timeline}
+\end{figure}
+
+The K-means lower-return profile has mean VIX 25.57 versus 15.29, mean 63-day log momentum $-3.32\%$ versus $5.32\%$, and mean drawdown $-10.52\%$ versus $-1.39\%$. The hierarchical lower-return profile is more extreme: its mean daily log return is $-1.673\%$ and approximately 90\% of its dates have negative returns. Breakeven-inflation and real-yield means differ relatively little under both partitions. The evidence therefore supports a mainly equity-risk interpretation, rather than a broad classification of inflation, growth and monetary-policy regimes.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\textwidth]{images/fixed11_mean_profiles.png}
+\caption{Original-unit mean profiles under K-means and complete-linkage hierarchical $K=2$, expressed in unconditional original-unit standard deviations for display. Lower/higher mean refers to the within-model S\&P return ordering; it is not membership matching. Colour scaling is common across panels. These are descriptive profiles, not the logged/scaled EP view targets or hypothesis-test results.}
+\label{fig:fixed11-mean-profiles}
+\end{figure}
+
+The S\&P return is included in clustering, so observed return contrasts partly reflect the fitted geometry and cannot independently validate the contribution of macro features. The mean/variance/CVaR hypothesis tests from notebook 03 concern different fitted partitions and are not transferred to these profiles.
+
+\subsection{Ten-feature views, with the asset return excluded}
+
+Following Vorobets/Fortitudo and the implementation in notebook 02, fit one EP vector per K-means profile using all 3,630 historical scenarios. The prior has half-life $T/2=1,815$ retained observations. The ten conditioning-feature means are equality views, and their population variances determine the second-moment upper bounds in equation~\eqref{eq:ep}. The conditioning coordinates are transformed and standardized: VIX and realized-volatility views concern their log levels; they do not impose the corresponding original-level moments. The S\&P log return is excluded from both equality and inequality views. Its return distribution arises from the reweighted historical feature--return pairs.
+
+\input{tables/fixed11_ep_diagnostics.tex}
+
+The largest normalized equality residual is $4.71\times10^{-7}$ and the largest positive second-moment-bound violation is $1.19\times10^{-6}$, both below the $10^{-5}$ check tolerance. Entropy ENS is approximately 1,297.7 for cluster-0 views and 2,900.2 for cluster-1 views. Neither vector is restricted to the observations used to estimate its target profile. These diagnostics check feasibility and concentration, not the correctness of the economic views or their forecasting performance.
+
+\subsection{One-day and 21-day simple-return scenarios}
+
+Use \texttt{fortitudo.tech.FullyFlexibleResampling} to generate 10,000 paths of 21 observations from each initial state, with seed 0. Each step samples a historical row under the current state's EP vector and updates the state to that row's K-means label. The resulting transition matrix is
+\begin{equation}
+P\approx\begin{bmatrix}
+0.8533 & 0.1467\\
+0.0444 & 0.9556
+\end{bmatrix},
+\label{eq:fixed11-transition}
+\end{equation}
+with row/column order $(0,1)$. These probabilities are implied by EP weights and labels, not estimated from consecutive historical state transitions.
+
+Convert the first sampled log return with $R_1=\exp(r_{I_1})-1$ and each 21-observation path with $R_{21}=\exp(\sum_{h=1}^{21}r_{I_h})-1$. Table~\ref{tab:fixed11-ep-returns} reports the simulated simple-return summaries. CVaR90 and CVaR95 are calculated with \texttt{fortitudo.tech.portfolio\_cvar}, setting \texttt{demean=False}, as mean loss in the worst 10\% and 5\% of the respective horizon outcomes.
+
+\input{tables/fixed11_ep_returns.tex}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\textwidth]{images/fixed11_ep_returns.png}
+\caption{EP/FFR S\&P 500 simple-return distributions. The left panel smooths historical one-day simple returns using the posterior profile weights. The right panel smooths the simulated 21-day cumulative returns with state changes. The table's one-day statistics use the first sampled step and consequently have Monte Carlo variation.}
+\label{fig:fixed11-ep-returns}
+\end{figure}
+
+Starting in the stress profile yields one-day CVaR95 of 3.81\%, versus 1.38\% from the calmer profile. At 21 observations the corresponding values are 13.20\% and 9.26\%. Initial-state differences attenuate as paths change state; the 21-day mean is neither 21 times the initial state's one-day mean nor a constant-state calculation. These results demonstrate that cluster-derived multivariate targets can be passed through the existing EP/FFR pipeline without specifying an asset-return view. They do not yet establish more accurate scenario distributions than threshold-based calibration, statistically distinct latent regimes, or improved investment performance.
 
 \section{Practical implementation: assigning states and resampling}
 \label{sec:practical}
@@ -646,7 +721,7 @@ m_j=\bar y_j=\frac1T\sum_{t=1}^{T}y_{tj},
 \qquad
 d_j=\left[\frac1T\sum_{t=1}^{T}(y_{tj}-\bar y_j)^2\right]^{1/2}.
 \end{equation}
-The robust alternative used in the selected calibration takes
+The robust alternative, used for sensitivity checks in notebook 04 and for the historical notebook-02 calibration, takes
 \begin{equation}
 m_j=\operatorname{median}_t(y_{tj}),
 \qquad
@@ -660,7 +735,7 @@ Constant features require separate handling. Scaling determines the relative inf
 
 \subsection{Distributional diagnostics after scaling}
 
-The notebook examines all 17 inputs with histograms and horizontal boxplots after StandardScaler. Table~\ref{tab:scaled-distributions} and Figure~\ref{fig:scaled-distributions} summarize selected features from the same 3,738 complete observations. These are clustering inputs, not a set of 17 asset-return series.
+Historical notebook 02 examines all 17 of its inputs with histograms and horizontal boxplots after StandardScaler. The following numerical diagnostics and figure concern that historical specification, not the eleven-input primary fit. Table~\ref{tab:scaled-distributions} and Figure~\ref{fig:scaled-distributions} summarize selected features from the same 3,738 complete observations. These are clustering inputs, not a set of 17 asset-return series.
 
 \begin{table}[htbp]
 \centering
@@ -698,7 +773,7 @@ Consequently, centring and scaling do not make the feature distributions Gaussia
 
 Mixed feature definitions are not inherently inconsistent: the output return is a resampled asset increment, while the conditioning inputs describe market states. Neither the empirical EP formulation nor the K-means objective requires Gaussian marginal distributions. The methodological concern is how skewness, tails and related volatility features influence PCA covariance and squared Euclidean distances. A stress-versus-calm partition may partly reflect those choices.
 
-Alternative feature maps, such as log levels of strictly positive volatility measures or changes in yields where economically appropriate, should be compared as separate configurations with renewed PCA and cluster selection. A log level is not a log return, and no automatic clipping or additional transformation is applied here. Histograms alone do not establish stationarity; state persistence, structural change and out-of-sample stability also require evaluation.
+Alternative feature maps, such as log levels of strictly positive volatility measures or changes in yields where economically appropriate, should be compared as separate configurations with renewed PCA and cluster selection. A log level is not a log return. The primary notebook-04 feature map does log VIX and realized volatility before scaling, so its risk-feature distributions differ from this historical figure; no automatic clipping is applied. Histograms alone do not establish stationarity; state persistence, structural change and out-of-sample stability also require evaluation.
 
 \subsection{PCA covariance and score transformation}
 
@@ -709,7 +784,7 @@ Apply PCA to the scaled, mean-centred vectors $\widetilde y_t$. Write the eigend
 \qquad \lambda_1\geq\cdots\geq\lambda_p\geq0.
 \end{equation}
 
-Choose $\widehat L$ using equation~\eqref{eq:pca-dimension}. The input received by K-means is then
+Retain all informative directions for the primary demonstration, or choose $\widehat L$ using equation~\eqref{eq:pca-dimension} for a truncation experiment. The input received by K-means is then
 \begin{equation}
 u_t=V_{\widehat L}^{\top}\widetilde y_t\in\mathbb R^{\widehat L},
 \label{eq:pca-scores}

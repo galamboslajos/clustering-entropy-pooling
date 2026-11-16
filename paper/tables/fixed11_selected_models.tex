@@ -1,0 +1,17 @@
+\begin{table}[htbp]
+\centering
+\footnotesize
+\begin{tabularx}{\textwidth}{@{}Xrrrrrrr@{}}
+\toprule
+Model & $K$ & Sil. sel. & Sil. all & CH & DB & Min. $N_k$ & Cover.\\
+\midrule
+K-means & 2 & 0.269 & 0.273 & 992.6 & 1.707 & 930 & 100.0\\
+K-medoids & 2 & 0.200 & 0.194 & 742.3 & 2.004 & 1486 & 100.0\\
+Hierarchical (complete) & 2 & 0.328 & 0.332 & 414.7 & 1.425 & 209 & 100.0\\
+GMM & 8 & 0.163 & 0.161 & 492.3 & 1.960 & 97 & 100.0\\
+DBSCAN & 4 & 0.044 & 0.042 & 102.2 & 1.628 & 37 & 82.0\\
+\bottomrule
+\end{tabularx}
+\caption{Fixed eleven-input experiment: one eligible selection per model family. Selection silhouette uses the same 1,000 dates; full silhouette is a subsequent check, not a renewed selection. CH and DB use all assigned dates. Coverage is a percentage; DBSCAN excludes 653 noise observations. GMM is selected by minimum eligible BIC, not by maximum silhouette.}
+\label{tab:fixed11-models}
+\end{table}
