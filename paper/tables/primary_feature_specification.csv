@@ -1,0 +1,12 @@
+block,feature,transformation
+macro_market,breakeven_10y,identity
+macro_market,real_yield_10y,identity
+macro_market,slope_10y_2y,identity
+macro_market,baa_10y_spread,identity
+macro_market,vix,log
+technical,sp500_momentum_63d,identity
+technical,sp500_drawdown_252d,identity
+technical,sp500_realized_vol_21d,log
+technical,sp500_rsi_14d,identity
+technical,small_large_momentum_21d,identity
+return_anchor,sp500_log_return,already_log_return

@@ -20,7 +20,7 @@
 \maketitle
 
 \begin{abstract}
-This note studies clustering as an alternative to threshold-based partitioning when constructing market-state views for Entropy Pooling (EP). Separate low, middle and high bands for many variables produce a large Cartesian set of potential joint states, whose observed subsets can be small. We instead learn a joint partition and use each cluster's feature means and variances to calibrate EP views within the Fully Flexible Resampling framework described by Vorobets. The primary worked example uses 17 daily features and a robust-scaled, two-cluster K-means calibration following a standard-input model search. It mainly distinguishes calmer and stressed equity-market conditions. An expanded 51-feature experiment and balanced feature-subset experiments are treated as separate extensions. This is a descriptive result, not evidence of a universal two-regime structure or improved forecasts. The empirical question is whether cluster-based calibration produces more stable and useful scenario distributions than threshold-based alternatives.
+This note studies clustering as an alternative to threshold-based partitioning when constructing market-state views for Entropy Pooling (EP). Separate low, middle and high bands for many variables produce a large Cartesian set of potential joint states, whose observed subsets can be small. We instead learn a joint partition and use each cluster's feature means and variances to calibrate EP views within the Fully Flexible Resampling framework described by Vorobets. The planned primary demonstration fixes five macro/market variables and five technical variables plus the S\&P 500 daily log return, compares five clustering families, and uses the selected partition to calibrate EP views on the ten state features. Full 51-input and randomized-subset checks are assigned to the appendix. The original 17-feature experiment is retained as exploratory evidence; its two-cluster result is not imposed on the new primary specification. The application concerns descriptive conditional states, not established economic regimes or demonstrated forecasting improvements. The empirical question is whether cluster-based calibration produces more stable and useful scenario distributions than threshold-based alternatives.
 \end{abstract}
 
 \section{Problem and proposed contribution}
@@ -162,7 +162,7 @@ The method also does not eliminate judgement. It relocates some decisions from i
 
 \subsection{Preprocessing and PCA dimension choice}
 
-Index the aligned observations by $t=1,\ldots,T$. Let $y_t\in\mathbb R^p$ contain the clustering features, $r_t$ the output asset's daily log return, and $x_t\in\mathbb R^d$ the EP conditioning features excluding that return. Construct features from raw observations, align complete dates, scale the clustering inputs, and apply mean-centred PCA. In the current implementation, the S\&P 500 close becomes a daily log return; other inputs retain their level, ratio or precomputed descriptor definitions. A common log-return transformation is not imposed on all features. The feature construction, standard and robust scaler formulas, and PCA transformation are detailed in Appendix~\ref{app:preprocessing}.
+Index the aligned observations by $t=1,\ldots,T$. Let $y_t\in\mathbb R^p$ contain the clustering features, $r_t$ the output asset's daily log return, and $x_t\in\mathbb R^d$ the EP conditioning features excluding that return. Construct features from raw observations, align complete dates, scale the clustering inputs, and apply mean-centred PCA. In the primary specification, the S\&P 500 close becomes a daily log return, selected positive risk levels receive a natural log, and other inputs retain their level, ratio or precomputed descriptor definitions as declared in Section~\ref{sec:study-design}. A common log-return transformation is not imposed on all features. The feature construction, standard and robust scaler formulas, and PCA transformation are detailed in Appendix~\ref{app:preprocessing}.
 
 For ordered eigenvalues $\lambda_1\geq\cdots\geq\lambda_p\geq0$ of the scaled-feature covariance, a declared cumulative explained-variance cutoff $\eta$ selects the smallest retained dimension:
 \begin{equation}
@@ -197,7 +197,7 @@ c_t=\underset{k\in\{0,\ldots,\widehat K-1\}}{\arg\min}\,
 \qquad
 \mathcal C_k=\{t:c_t=k\},\qquad N_k=|\mathcal C_k|.
 \end{equation}
-Ties are resolved deterministically. Cluster labels identify groups and carry no numerical ordering of risk. Equations below apply to every $k=0,\ldots,\widehat K-1$, yielding $\widehat K$ profile-specific EP probability vectors. Two clusters appear only as the current empirical example.
+Ties are resolved deterministically. Cluster labels identify groups and carry no numerical ordering of risk. Equations below apply to every $k=0,\ldots,\widehat K-1$, yielding $\widehat K$ profile-specific EP probability vectors. Two clusters appear in the historical exploratory example only; the primary count must be selected again.
 
 For each cluster, calculate the conditioning-feature mean and population variance vectors:
 \begin{equation}
@@ -316,99 +316,65 @@ They follow from EP weights and sampled-row labels, rather than counts of consec
 \section{Study design and model comparison}
 \label{sec:study-design}
 
-\subsection{Primary example and separate extensions}
+\subsection{Decision: eleven inputs for the main demonstration}
 
-The primary worked example is the original 17-feature experiment in \texttt{02\_clustering\_analysis.ipynb}, with 3,738 complete observations from 6 October 2011 to 2 October 2026. Its selected robust K-means calibration already supplies the profiles used in the EP/FFR demonstration. Keeping this example as the main application maintains a traceable sequence from model comparison to profiles and scenario probabilities. It is not chosen because its scores can be compared favourably with a different feature universe.
-
-The expanded study in \texttt{03\_random\_feature\_clustering.ipynb} has a different role. Its full-panel fit uses 50 candidate features plus the S\&P 500 log return on 3,630 common dates. Its randomized fits use five macro/market features, five technical features and the same mandatory return, giving eleven inputs per draw. Seven positive risk descriptors are logged in this extension before scaling; the original study does not apply those additional logs. These experiments change both the feature definitions and the complete-case sample. Their native silhouettes therefore cannot be ranked against the original experiment as if they were one model-selection contest.
+The main demonstration will use one fixed set of ten state features---five macro/market variables and five technical variables---plus the S\&P 500 daily log return, for eleven clustering inputs in total. This makes the main fit comparable in size and block balance with the randomized $5+5+$return experiment. Eleven is a declared design choice for a compact, interpretable application, not an estimated optimal feature count. The ten features are chosen by their stated economic roles, not by selecting the random draw with the highest silhouette or the largest return contrast. They remain fixed throughout the primary model comparison.
 
 \begin{table}[htbp]
 \centering
 \small
-\begin{tabularx}{\textwidth}{@{}p{0.22\textwidth}XX@{}}
+\begin{tabularx}{\textwidth}{@{}lXX@{}}
 \toprule
-Experiment & Configuration & Role in the paper\\
+Block & Fixed feature & Role\\
 \midrule
-Original, notebook 02 & 17 features; robust K-means calibration; all 16 informative PCs; selected $K=2$ & Primary detailed profiles and implemented EP/FFR example.\\[3pt]
-Full panel, notebook 03 & 51 inputs; standard scaling; all informative PCs; own count/model search & Expanded benchmark; its calibrations are sensitivity checks.\\[3pt]
-Feature draws, notebook 03 & $5+5$ randomly drawn features plus the fixed return; standard scaling; own count search & Sensitivity to feature choice, memberships and profiles.\\[3pt]
-Return only, notebook 03 & Standardized S\&P 500 log return; own model search & Control for separation attributable to returns alone.\\
+Macro/market & 10-year breakeven inflation & Inflation compensation\\
+& 10-year real Treasury yield & Real financing conditions\\
+& 10-year minus 2-year Treasury yield & Curve slope\\
+& Baa corporate yield minus 10-year Treasury & Credit conditions\\
+& VIX & Option-implied equity risk\\[3pt]
+Technical & 63-day S\&P 500 log momentum & Trend\\
+& 252-day S\&P 500 drawdown & Distance from the trailing peak\\
+& 21-day S\&P 500 realized volatility & Realized risk\\
+& S\&P 500 RSI14 & Oscillator\\
+& 21-day small-cap/large-cap relative momentum & Relative market performance\\[3pt]
+Return anchor & Daily S\&P 500 log return & Mandatory equity input and profiled asset\\
 \bottomrule
 \end{tabularx}
-\caption{Reporting roles. Each experiment keeps its own feature map, sample, selection rule and labels. The original worked example is not a fitted model that is reused unchanged in the expanded experiments.}
+\caption{The fixed eleven-input primary specification. The five technical variables represent the five technical families in the expanded pool. Macro coverage is deliberately focused on inflation, real yields, the curve, credit and implied volatility; FX and commodity alternatives remain in the appendix feature pool. None of these choices establishes independent or equally informative inputs.}
+\label{tab:primary-features}
+\end{table}
+
+Use the expanded experiment's common complete-case calendar for both the eleven-input fit and the full-panel comparison, without filling missing observations. Follow its feature definitions and selective-log policy: apply a natural log to VIX and 21-day realized volatility in this fixed subset, retain the other precomputed descriptors and signed state variables, and do not log the equity log return again. Fit StandardScaler, then retain all informative, unwhitened PCs for the primary search. This preserves the scaled Euclidean geometry rather than claiming that an arbitrary variance cutoff is optimal. PCA95 and robust scaling are sensitivity checks. The illustrative 70\% cutoff in the mathematical section is not the primary specification.
+
+\subsection{Model choice must be rerun on the fixed eleven inputs}
+
+Compare K-means, K-medoids, agglomerative clustering, Gaussian mixtures and DBSCAN on the same eleven inputs, dates and declared evaluation geometry. Reuse the documented 85-candidate grid in Appendix~\ref{app:model-inventory}: candidate counts $K=2,\ldots,8$, method-specific linkage/covariance/initialization choices and the DBSCAN neighbourhood grid. Apply the same minimum-population and coverage screen to every family, with GMM convergence required. Select geometric candidates by silhouette and GMM candidates by BIC within a fixed representation. Report all five per-family selections, unavailable searches, population sizes, coverage and the three geometric diagnostics in one main results table. Record whether silhouette uses the fixed sample of dates or the complete sample and keep that choice common across models.
+
+K-means is the leading candidate from the exploratory work, but neither the model family nor $K=2$ is inherited as a demonstrated winner for this new fixed specification. The main demonstration will follow the selected, adequately populated configuration after that comparison; use its labels consistently for the time plot, original-unit profiles and EP views. The EP conditioning vector contains the ten state features and excludes the S\&P 500 return from its imposed mean/variance views. Keeping the return in clustering makes this a contemporaneous state-description experiment rather than independent evidence that state variables forecast returns.
+
+The eleven-input model search, profiles and EP demonstration under this exact fixed specification are not yet reported here. Existing 17-feature scores, cluster populations and EP outputs are historical exploratory results retained in Appendix~\ref{app:model-inventory}; they are not substituted for the pending primary results. Results from another random eleven-feature draw cannot be relabelled as this fit.
+
+\subsection{Appendix checks and their role}
+
+\begin{table}[htbp]
+\centering
+\small
+\begin{tabularx}{\textwidth}{@{}p{0.23\textwidth}XX@{}}
+\toprule
+Experiment & Inputs & Role\\
+\midrule
+Main demonstration & Fixed five macro/market + five technical + S\&P return & Full model comparison; selected fit's detailed profiles and EP application.\\[3pt]
+Full-panel appendix & All 50 candidate state features + S\&P return = 51 & Check sensitivity to expanding the information set; own model/count search.\\[3pt]
+Randomized appendix & Repeated five macro/market + five technical draws + fixed return & Assess count, membership and profile sensitivity at the same input count as the main fit.\\[3pt]
+Return-only appendix & S\&P daily log return & Control for separation attributable to the common return anchor.\\[3pt]
+Historical appendix & Original 17-feature notebook 02 & Preserve the exploratory tuning and existing EP example; not primary-model evidence.\\
+\bottomrule
+\end{tabularx}
+\caption{Reporting decision: eleven inputs in the main demonstration, expanded and randomized checks in the appendix. Fifty denotes the candidate state-feature pool; fifty-one includes the equity return.}
 \label{tab:experiment-roles}
 \end{table}
 
-\subsection{Original model search and a transparent population screen}
-
-Five model families were evaluated, with three-cluster starting fits for the fixed-count methods and an initial DBSCAN configuration. The standard-input search contains 85 candidates, summarized in Table~\ref{tab:original-grid}. StandardScaler is fitted to all 17 inputs. Models receive all 16 informative, unwhitened PCA scores, so this rotation preserves Euclidean distances rather than truncating at four PCs. The VIX term-spread identity accounts for the redundant direction. Scores are calculated on the original 17 standardized features, excluding DBSCAN noise and reporting its coverage. AIC/BIC are compared only within the same GMM representation.
-
-\begin{table}[htbp]
-\centering
-\small
-\begin{tabularx}{\textwidth}{@{}lXrl@{}}
-\toprule
-Model & Standard-input grid & Fits & Selection\\
-\midrule
-K-means & $K=2,\ldots,8$; 20 starts; seed 1 & 7 & Highest silhouette\\[3pt]
-K-medoids & $K=2,\ldots,8$; FasterPAM; seeds 1, 7 & 14 & Highest silhouette\\[3pt]
-Hierarchical & $K=2,\ldots,8$; Ward, average, complete & 21 & Highest silhouette\\[3pt]
-GMM & $K=2,\ldots,8$; full, tied, diagonal, spherical covariance & 28 & Lowest eligible BIC\\[3pt]
-DBSCAN & Minimum samples 5, 10, 20; neighbour-distance quantiles 0.50, 0.65, 0.80, 0.90, 0.95 & 15 & Highest eligible silhouette\\
-\bottomrule
-\end{tabularx}
-\caption{The original search, not an exhaustive inventory of clustering methods or parameter settings. GMM uses three starts, at most 500 iterations, covariance regularization $10^{-5}$ and seed 1.}
-\label{tab:original-grid}
-\end{table}
-
-The original notebook's eligibility flag imposed population/coverage restrictions on DBSCAN but did not impose a common minimum population on every method. Consequently, its largest raw silhouette is 0.739 for complete-linkage hierarchical clustering, with just nine observations in the smaller group. That result remains visible in the complete inventory; it is not the preferred calibration for the present profile-estimation exercise.
-
-For this paper's reporting comparison, apply the same population screen to every saved candidate: at least two clusters, finite silhouette, at least 80\% assigned coverage and at least $\max(20,\lceil0.01T\rceil)=38$ observations in every cluster; GMM must also converge. This is an explicitly retrospective reporting choice, not a rule that was prespecified in notebook 02. The threshold is a practical guard against extremely thin profiles, not a guarantee of reliable tail estimation. Its sensitivity remains to be examined. Reconsider all saved candidates under this screen, rather than discarding a model family merely because its original winner fails. The resulting hierarchical selection is Ward with $K=2$; no DBSCAN candidate passes. No model is refitted to produce this reporting comparison.
-
-\input{tables/original_selected_models.tex}
-
-\subsection{Configuration demonstrated in detail}
-
-Use standard-scaled K-means with selected $K=2$ as the searched reference, and its robust-scaled $K=2$ calibration as the primary worked EP example. The reference has the highest silhouette among the screened standard-input per-family selections. The robust calibration improves silhouette from 0.329 to 0.342 and Davies--Bouldin from 1.493 to 1.455 in the same evaluation geometry; Calinski--Harabasz decreases slightly. The choice is thus supported by the declared geometric and population diagnostics, rather than dominance on every metric or investment usefulness.
-
-The detailed calibration fits median/IQR RobustScaler to the same 17 feature columns, retains all 16 informative PCs without whitening, and fits K-means with $K=2$, 20 starts and seed 1. The count is inherited from the standard search; it is not reselected under robust scaling. Its ARI with the standard reference is 0.916. The original standard configuration is unchanged across the three tested initialization seeds (pairwise ARI 1); this seed check does not establish seed stability of the robust calibration. PCA95 is a further fixed-settings check, retaining ten standard PCs and leaving the K-means assignments nearly unchanged (ARI 0.996 with the standard reference).
-
-In this note, ``preferred configuration'' means the selected, adequately populated worked example among the examined configurations. It does not mean the global optimum across models, the statistically proven number of economic regimes, or the most useful EP calibration. The full 20-row starting/tuned/calibration inventory and its saved numerical sources appear in Appendix~\ref{app:model-inventory}. Expanded-panel robustness, financial-profile tests and a controlled threshold-versus-cluster EP comparison remain separate layers of evidence; none is substituted for the others.
-
-\section{Detailed worked example and interpretation}
-\label{sec:preliminary}
-
-The primary example follows the configuration fixed in Section~\ref{sec:study-design}: 17 features, 3,738 complete daily observations, robust scaling, all 16 informative PCs and the $K=2$ calibration inherited from the standard-input search. It does not use the illustrative four-PC/70\% cutoff. Cluster memberships are learned in that robust PCA geometry; profiles are calculated from the corresponding original feature observations, and geometric scores use the common 17-feature standard-scaled geometry.
-
-The calibration has silhouette $0.342$ and Davies--Bouldin $1.455$, with all observations assigned. Its cluster sizes are:
-\begin{center}
-\begin{tabular}{lrr}
-\toprule
-Cluster & Observations & Share (\%)\\
-\midrule
-0 & 3,067 & 82.05\\
-1 & 671 & 17.95\\
-\bottomrule
-\end{tabular}
-\end{center}
-Figure~\ref{fig:cluster-timeline} shows when each cluster appears in the historical sample.
-\begin{figure}[htbp]
-\centering
-\includegraphics[width=\textwidth]{images/cluster_timeline.png}
-\caption{Daily assignments from robust K-means with $K=2$, from 6 October 2011 to 2 October 2026. Each mark represents an observed date assigned to cluster 0 (calmer, 3,067 observations) or cluster 1 (stressed, 671 observations). Only complete feature dates are shown; missing dates are not filled. The labels are fitted on the full sample and are descriptive.}
-\label{fig:cluster-timeline}
-\end{figure}
-
-The larger cluster is relatively calm. The smaller cluster has higher volatility, deeper drawdowns and negative average momentum. Their inflation and real-yield profiles are less distinct. This suggests a coarse market-stress partition, rather than a complete classification of macroeconomic regimes.
-
-The two-cluster choice is provisional within the configurations examined. It does not establish that two clusters explain most variance, are the minimum number of regimes, or suffice for every asset and risk-management question. PCA variance retention and cluster-count selection answer different questions.
-
-\paragraph{Modest silhouette and possible underfitting.}
-The selected configuration's average silhouette of $0.342$ is modest, rather than evidence of sharply separated states. Silhouette compares within-cluster distances with distances to the nearest alternative cluster \cite{rousseeuw1987}; the positive average indicates some separation, but being preferred among the tested configurations does not imply strong absolute cluster quality. The average alone also does not reveal how many individual observations have near-zero or negative silhouettes. Per-cluster silhouette distributions are therefore needed to assess ambiguous assignments.
-
-This limited separation raises a concern about whether K-means captures enough of the relevant structure. Underfitting is one possibility: the two groups may pool distinct subgroups whose differences matter for EP moment views. However, a modest silhouette does not diagnose underfitting or establish that increasing $K$ will improve the model. It can also reflect overlapping or continuous market conditions, the chosen feature geometry, or a mismatch between the data structure and the K-means distance-based partition. The large cluster containing 82.05\% of observations warrants further profile analysis. Larger-$K$ alternatives, different representations and other clustering methods should be compared using both assignment diagnostics and held-out conditional-distribution and tail-risk calibration. Here, ``best'' means preferred under the stated criterion among the examined configurations, with substantial limitations still to assess.
-
-The current EP views use 16 features after excluding the S\&P 500 return, which is the output asset. However, that return was included when fitting the existing clusters, and several other features are equity-based. The experiment is therefore descriptive. A stricter state--outcome design requires refitting clusters without the target return and aligning available state information with subsequent asset returns.
+The full-panel and randomized checks assess sensitivity of the primary design; they do not turn eleven inputs into an optimal feature count or guarantee identical memberships. Count stability, membership agreement, financial-profile differences and comparative EP usefulness remain distinct questions. Compare partitions in explicitly shared evaluation spaces; native silhouettes from different dimensions cannot be ranked as one contest. Appendix empirical results remain to be consolidated under this design.
 
 \section{Practical implementation: assigning states and resampling}
 \label{sec:practical}
@@ -468,7 +434,7 @@ Resample blocks of the joint feature and return history to assess sensitivity to
 
 Complement geometric diagnostics with explicit tests of equal conditional means and variances across assignment regions, and equal equity CVaR at specified confidence levels. Estimate preprocessing and select the clustering configuration on an earlier training period, leave a declared temporal gap, and freeze the assignment rule before evaluating later observations. This targets financial profiles under a fixed learned rule. Ordinary same-sample tests ignore data-dependent group formation; selective mean-inference methods address a different inferential target under their stated assumptions \cite{chengao2025}.
 
-The proposed appendix uses omnibus Wald tests with dependence-aware covariance estimates, reports effect sizes alongside raw and multiplicity-adjusted p-values, and retains skipped tests in the declared reporting framework. Appendix~\ref{app:profile-inference} records the hypotheses and reporting concepts. A historical split examined after the full dataset has already been explored is retrospective validation, not an untouched confirmatory experiment. The original full-sample profiles, fixed-count bootstrap refits and chronologically retrained partitions are different statistical objects and must be labelled separately. The tests currently implemented in notebook 03 concern its extension fits, not the original 17-feature primary calibration. Because the return enters clustering, financial differences describe the learned assignment regions and do not independently establish added information from macro features. Report financial magnitudes and uncertainty alongside significance; tests on simple returns must not be described as log-return tests.
+The proposed appendix uses omnibus Wald tests with dependence-aware covariance estimates, reports effect sizes alongside raw and multiplicity-adjusted p-values, and retains skipped tests in the declared reporting framework. Appendix~\ref{app:profile-inference} records the hypotheses and reporting concepts. A historical split examined after the full dataset has already been explored is retrospective validation, not an untouched confirmatory experiment. The original full-sample profiles, fixed-count bootstrap refits and chronologically retrained partitions are different statistical objects and must be labelled separately. The tests currently implemented in notebook 03 concern its extension fits, not the newly specified fixed eleven-input primary fit. Because the return enters clustering, financial differences describe the learned assignment regions and do not independently establish added information from macro features. Report financial magnitudes and uncertainty alongside significance; tests on simple returns must not be described as log-return tests.
 
 \subsection{Separating robustness, distinguishability and usefulness}
 
@@ -649,13 +615,13 @@ For example, an equity price $P_\tau$ becomes a daily log return
 \begin{equation}
 \rho_\tau=\log\!\left(\frac{P_\tau}{P_{\tau^-}}\right),
 \end{equation}
-where $\tau^-$ is the previous observed equity trading date. This transformation applies to the equity-price input, rather than to every feature. In the current 17-feature specification, write
+where $\tau^-$ is the previous observed equity trading date. This transformation applies to the equity-price input, rather than to every feature. For the historical 17-feature specification retained in Appendix~\ref{app:model-inventory}, write
 \begin{equation}
 y_\tau^{\mathrm{raw}}=
 \begin{bmatrix}\rho_\tau\\ \ell_\tau\\ h_\tau\end{bmatrix},
 \qquad \ell_\tau\in\mathbb R^8,\quad h_\tau\in\mathbb R^8.
 \end{equation}
-The vector $\ell_\tau$ contains the 10-year breakeven and real yield, Treasury slope, credit spread, VIX, VIX3M, their term spread and the S\&P 500/gold ratio, retained as level or ratio state variables. The vector $h_\tau$ contains the eight trailing technical descriptors from the dataset builder. These are not transformed a second time: for example, 63-day momentum is already a log return and volatility expansion is already a log volatility ratio, while drawdown and trend efficiency are bounded relative descriptors.
+The vector $\ell_\tau$ contains the 10-year breakeven and real yield, Treasury slope, credit spread, VIX, VIX3M, their term spread and the S\&P 500/gold ratio, retained as level or ratio state variables. The vector $h_\tau$ contains the eight trailing technical descriptors from the dataset builder. In that historical specification these descriptors are not transformed a second time: for example, 63-day momentum is already a log return and volatility expansion is already a log volatility ratio, while drawdown and trend efficiency are bounded relative descriptors.
 
 The mapping $g$ is therefore feature-specific. High volatility and rising volatility represent different state questions. Differencing all inputs would change the states being identified, and ordinary log returns are undefined across parts of the real-yield, slope and term-spread histories because these can be nonpositive. Calculate returns and trailing features before removing incomplete observations, so missing conditioning features do not change the underlying equity-return intervals.
 
@@ -664,7 +630,7 @@ Let $\mathcal I=\{\tau_1,\ldots,\tau_T\}$ contain the dates with complete requir
 Y=\begin{bmatrix}y_1^\top\\ \vdots\\ y_T^\top\end{bmatrix}
 \in\mathbb R^{T\times p}.
 \end{equation}
-Dates identify rows and are not clustering features. Let $x_t\in\mathbb R^d$ denote the separate EP conditioning-feature vector, excluding the output return $r_t$. The current choice of clustering and EP features is reported in Section~\ref{sec:preliminary}.
+Dates identify rows and are not clustering features. Let $x_t\in\mathbb R^d$ denote the separate EP conditioning-feature vector, excluding the output return $r_t$. The primary clustering and EP features are declared in Section~\ref{sec:study-design}; the historical 17-feature example is retained in Appendix~\ref{app:model-inventory}.
 
 \subsection{Feature scaling}
 
@@ -750,8 +716,85 @@ u_t=V_{\widehat L}^{\top}\widetilde y_t\in\mathbb R^{\widehat L},
 \end{equation}
 Here $V_{\widehat L}$ contains the eigenvectors associated with the retained eigenvalues. No whitening is applied. These score vectors form the rows of $U_{\widehat L}$ in the main pipeline; candidate K-means models are fitted in this representation.
 
-\section{Complete model and calibration inventory}
+\section{Historical 17-feature model comparison and EP example}
 \label{app:model-inventory}
+
+This appendix preserves the original exploratory experiment. It is not the fixed eleven-input primary specification in Section~\ref{sec:study-design}.
+
+\subsection{Original model search and a transparent population screen}
+
+Five model families were evaluated, with three-cluster starting fits for the fixed-count methods and an initial DBSCAN configuration. The standard-input search contains 85 candidates, summarized in Table~\ref{tab:original-grid}. StandardScaler is fitted to all 17 inputs. Models receive all 16 informative, unwhitened PCA scores, so this rotation preserves Euclidean distances rather than truncating at four PCs. The VIX term-spread identity accounts for the redundant direction. Scores are calculated on the original 17 standardized features, excluding DBSCAN noise and reporting its coverage. AIC/BIC are compared only within the same GMM representation.
+
+\begin{table}[htbp]
+\centering
+\small
+\begin{tabularx}{\textwidth}{@{}lXrl@{}}
+\toprule
+Model & Standard-input grid & Fits & Selection\\
+\midrule
+K-means & $K=2,\ldots,8$; 20 starts; seed 1 & 7 & Highest silhouette\\[3pt]
+K-medoids & $K=2,\ldots,8$; FasterPAM; seeds 1, 7 & 14 & Highest silhouette\\[3pt]
+Hierarchical & $K=2,\ldots,8$; Ward, average, complete & 21 & Highest silhouette\\[3pt]
+GMM & $K=2,\ldots,8$; full, tied, diagonal, spherical covariance & 28 & Lowest eligible BIC\\[3pt]
+DBSCAN & Minimum samples 5, 10, 20; neighbour-distance quantiles 0.50, 0.65, 0.80, 0.90, 0.95 & 15 & Highest eligible silhouette\\
+\bottomrule
+\end{tabularx}
+\caption{The original search, not an exhaustive inventory of clustering methods or parameter settings. GMM uses three starts, at most 500 iterations, covariance regularization $10^{-5}$ and seed 1.}
+\label{tab:original-grid}
+\end{table}
+
+The original notebook's eligibility flag imposed population/coverage restrictions on DBSCAN but did not impose a common minimum population on every method. Consequently, its largest raw silhouette is 0.739 for complete-linkage hierarchical clustering, with just nine observations in the smaller group. That result remains visible in the complete inventory; it is not the preferred calibration for the present profile-estimation exercise.
+
+For this paper's reporting comparison, apply the same population screen to every saved candidate: at least two clusters, finite silhouette, at least 80\% assigned coverage and at least $\max(20,\lceil0.01T\rceil)=38$ observations in every cluster; GMM must also converge. This is an explicitly retrospective reporting choice, not a rule that was prespecified in notebook 02. The threshold is a practical guard against extremely thin profiles, not a guarantee of reliable tail estimation. Its sensitivity remains to be examined. Reconsider all saved candidates under this screen, rather than discarding a model family merely because its original winner fails. The resulting hierarchical selection is Ward with $K=2$; no DBSCAN candidate passes. No model is refitted to produce this reporting comparison.
+
+\input{tables/original_selected_models.tex}
+
+\subsection{Original robust calibration and its selection history}
+
+Use standard-scaled K-means with selected $K=2$ as the searched reference, and its robust-scaled $K=2$ calibration as the original worked EP example. The reference has the highest silhouette among the screened standard-input per-family selections. The robust calibration improves silhouette from 0.329 to 0.342 and Davies--Bouldin from 1.493 to 1.455 in the same evaluation geometry; Calinski--Harabasz decreases slightly. The choice is thus supported by the declared geometric and population diagnostics, rather than dominance on every metric or investment usefulness.
+
+The detailed calibration fits median/IQR RobustScaler to the same 17 feature columns, retains all 16 informative PCs without whitening, and fits K-means with $K=2$, 20 starts and seed 1. The count is inherited from the standard search; it is not reselected under robust scaling. Its ARI with the standard reference is 0.916. The original standard configuration is unchanged across the three tested initialization seeds (pairwise ARI 1); this seed check does not establish seed stability of the robust calibration. PCA95 is a further fixed-settings check, retaining ten standard PCs and leaving the K-means assignments nearly unchanged (ARI 0.996 with the standard reference).
+
+In this note, ``preferred configuration'' means the selected, adequately populated worked example among the examined configurations. It does not mean the global optimum across models, the statistically proven number of economic regimes, or the most useful EP calibration. The full 20-row starting/tuned/calibration inventory and its saved numerical sources appear in Appendix~\ref{app:model-inventory}. Expanded-panel robustness, financial-profile tests and a controlled threshold-versus-cluster EP comparison remain separate layers of evidence; none is substituted for the others.
+
+
+\subsection{Historical 17-feature profiles and EP example}
+\label{sec:preliminary}
+
+The historical notebook-02 example uses 17 features, 3,738 complete daily observations, robust scaling, all 16 informative PCs and the $K=2$ calibration inherited from the standard-input search. It does not use the illustrative four-PC/70\% cutoff. Cluster memberships are learned in that robust PCA geometry; profiles are calculated from the corresponding original feature observations, and geometric scores use the common 17-feature standard-scaled geometry.
+
+The calibration has silhouette $0.342$ and Davies--Bouldin $1.455$, with all observations assigned. Its cluster sizes are:
+\begin{center}
+\begin{tabular}{lrr}
+\toprule
+Cluster & Observations & Share (\%)\\
+\midrule
+0 & 3,067 & 82.05\\
+1 & 671 & 17.95\\
+\bottomrule
+\end{tabular}
+\end{center}
+Figure~\ref{fig:cluster-timeline} shows when each cluster appears in the historical sample.
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\textwidth]{images/cluster_timeline.png}
+\caption{Daily assignments from robust K-means with $K=2$, from 6 October 2011 to 2 October 2026. Each mark represents an observed date assigned to cluster 0 (calmer, 3,067 observations) or cluster 1 (stressed, 671 observations). Only complete feature dates are shown; missing dates are not filled. The labels are fitted on the full sample and are descriptive.}
+\label{fig:cluster-timeline}
+\end{figure}
+
+The larger cluster is relatively calm. The smaller cluster has higher volatility, deeper drawdowns and negative average momentum. Their inflation and real-yield profiles are less distinct. This suggests a coarse market-stress partition, rather than a complete classification of macroeconomic regimes.
+
+The two-cluster choice is provisional within the configurations examined. It does not establish that two clusters explain most variance, are the minimum number of regimes, or suffice for every asset and risk-management question. PCA variance retention and cluster-count selection answer different questions.
+
+\paragraph{Modest silhouette and possible underfitting.}
+The selected configuration's average silhouette of $0.342$ is modest, rather than evidence of sharply separated states. Silhouette compares within-cluster distances with distances to the nearest alternative cluster \cite{rousseeuw1987}; the positive average indicates some separation, but being preferred among the tested configurations does not imply strong absolute cluster quality. The average alone also does not reveal how many individual observations have near-zero or negative silhouettes. Per-cluster silhouette distributions are therefore needed to assess ambiguous assignments.
+
+This limited separation raises a concern about whether K-means captures enough of the relevant structure. Underfitting is one possibility: the two groups may pool distinct subgroups whose differences matter for EP moment views. However, a modest silhouette does not diagnose underfitting or establish that increasing $K$ will improve the model. It can also reflect overlapping or continuous market conditions, the chosen feature geometry, or a mismatch between the data structure and the K-means distance-based partition. The large cluster containing 82.05\% of observations warrants further profile analysis. Larger-$K$ alternatives, different representations and other clustering methods should be compared using both assignment diagnostics and held-out conditional-distribution and tail-risk calibration. Here, ``best'' means preferred under the stated criterion among the examined configurations, with substantial limitations still to assess.
+
+The historical notebook-02 EP views use 16 features after excluding the S\&P 500 return, which is the output asset. However, that return was included when fitting the existing clusters, and several other features are equity-based. The experiment is therefore descriptive. A stricter state--outcome design requires refitting clusters without the target return and aligning available state information with subsequent asset returns.
+
+
+\subsection{Complete historical inventory}
 
 Table~\ref{tab:original-inventory} retains all five starting fits, five original standard-input selections and ten fixed-settings PCA95/robust checks from notebook 02. The historical rows are preserved, including small-cluster and unavailable-score outcomes. They are not silently replaced by the retrospective screened selections in Table~\ref{tab:original-selected-models}. In particular, the original hierarchical calibration checks inherit complete linkage; they are not robust/PCA95 checks of the newly reported screened Ward alternative. DBSCAN recalibrates its selected neighbour-distance quantile in each representation.
 

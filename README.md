@@ -10,7 +10,7 @@ The intended contribution here is the clustering application and its evaluation,
 
 ## Status
 
-Daily dataset preparation and clustering analysis are implemented. The preliminary [research note](paper/main.tex) uses the original 17-feature study as the detailed EP example; the 51-feature and randomized studies are separate extensions. The paper includes the model grid, comparison tables and an explicit explanation of the preferred configuration. Comparative EP benefits remain under investigation.
+Daily dataset preparation and clustering analysis are implemented. The preliminary [research note](paper/main.tex) fixes ten state features (five macro/market and five technical) plus the S&P 500 log return for its planned main demonstration. The exact [feature specification](paper/tables/primary_feature_specification.csv) is recorded before fitting that demonstration. The full 51-input panel and randomized subsets are appendix checks; original 17-feature results are retained as exploratory history. The five-model search and EP application must be rerun for this fixed primary specification. Comparative EP benefits remain under investigation.
 
 ## Daily dataset
 
