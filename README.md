@@ -10,7 +10,7 @@ The intended contribution here is the clustering application and its evaluation,
 
 ## Status
 
-Daily dataset preparation and clustering analysis are implemented. A short research report will follow.
+Daily dataset preparation and clustering analysis are implemented. The preliminary [research note](paper/main.tex) uses the original 17-feature study as the detailed EP example; the 51-feature and randomized studies are separate extensions. The paper includes the model grid, comparison tables and an explicit explanation of the preferred configuration. Comparative EP benefits remain under investigation.
 
 ## Daily dataset
 

@@ -1,0 +1,32 @@
+\begin{table}[htbp]
+\centering
+\footnotesize
+\begin{tabularx}{\textwidth}{@{}Xllrrrrc@{}}
+\toprule
+Model & Stage & Input & $K$ & Sil. & Min. $N_k$ & Cover. & Screen\\
+\midrule
+K-means & Base & Standard & 3 & 0.174 & 635 & 100.0 & Yes\\
+K-means & Tuned & Standard & 2 & 0.329 & 739 & 100.0 & Yes\\
+K-means & Check & PCA95 & 2 & 0.329 & 738 & 100.0 & Yes\\
+K-means & Check & Robust & 2 & 0.342 & 671 & 100.0 & Yes\\
+K-medoids & Base & Standard & 3 & 0.165 & 619 & 100.0 & Yes\\
+K-medoids & Tuned & Standard & 8 & 0.171 & 213 & 100.0 & Yes\\
+K-medoids & Check & PCA95 & 8 & 0.170 & 246 & 100.0 & Yes\\
+K-medoids & Check & Robust & 8 & 0.164 & 198 & 100.0 & Yes\\
+Hierarchical & Base & Standard & 3 & 0.142 & 746 & 100.0 & Yes\\
+Hierarchical & Tuned & Standard & 2 & 0.739 & 9 & 100.0 & No\\
+Hierarchical & Check & PCA95 & 2 & 0.665 & 18 & 100.0 & No\\
+Hierarchical & Check & Robust & 2 & 0.711 & 22 & 100.0 & No\\
+GMM & Base & Standard & 3 & 0.147 & 790 & 100.0 & Yes\\
+GMM & Tuned & Standard & 8 & 0.153 & 39 & 100.0 & Yes\\
+GMM & Check & PCA95 & 8 & 0.138 & 63 & 100.0 & Yes\\
+GMM & Check & Robust & 8 & 0.145 & 69 & 100.0 & Yes\\
+DBSCAN & Base & Standard & 1 & --- & 3687 & 98.6 & No\\
+DBSCAN & Tuned & Standard & 4 & 0.103 & 24 & 92.0 & No\\
+DBSCAN & Check & PCA95 & 3 & 0.114 & 37 & 91.9 & No\\
+DBSCAN & Check & Robust & 5 & 0.097 & 19 & 91.2 & No\\
+\bottomrule
+\end{tabularx}
+\caption{All 20 configurations originally displayed in notebook 02. Coverage is a percentage. ``Screen'' applies the retrospective paper rule, not notebook 02's original eligibility flag. The hierarchical tuned row is the original complete-linkage winner; its PCA95/Robust checks inherit those settings. The screened Ward alternative in Table~\ref{tab:original-selected-models} is recovered from the full saved grid. PCA95 and robust rows keep each original standard winner's settings rather than repeating the search.}
+\label{tab:original-inventory}
+\end{table}

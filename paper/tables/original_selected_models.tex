@@ -1,0 +1,19 @@
+\begin{table}[htbp]
+\centering
+\small
+\begin{tabularx}{\textwidth}{@{}Xrrrrrr@{}}
+\toprule
+Model & $K$ & Sil. & CH & DB & Min. $N_k$ & Cover. (\%)\\
+\midrule
+K-means & 2 & 0.329 & 1151.3 & 1.493 & 739 & 100.0\\
+K-medoids & 8 & 0.171 & 550.8 & 1.753 & 213 & 100.0\\
+Hierarchical (Ward) & 2 & 0.293 & 1014.4 & 1.665 & 863 & 100.0\\
+GMM & 8 & 0.153 & 578.8 & 1.727 & 39 & 100.0\\
+DBSCAN & --- & --- & --- & --- & --- & ---\\
+\midrule
+\textbf{K-means, robust}$^{*}$ & 2 & 0.342 & 1145.1 & 1.455 & 671 & 100.0\\
+\bottomrule
+\end{tabularx}
+\caption{Original 17-feature experiment: per-model selections from the saved standard-input tuning grid after the retrospective population screen. Silhouette and Calinski--Harabasz (CH) are higher-is-preferred; Davies--Bouldin (DB) is lower-is-preferred. All scores use the same original 17 standardized features and all assigned dates. No DBSCAN candidate meets the paper screen. $^{*}$The robust K-means row is the detailed worked example: a fixed-$K$ calibration of the standard winner, not a renewed count search.}
+\label{tab:original-selected-models}
+\end{table}
